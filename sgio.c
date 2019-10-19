@@ -273,29 +273,35 @@ int sg16 (int fd, int rw, int dma, struct ata_tf *tf,
 	    write(data_bytes, &data_bytes, 8) < 0)
 	  perror("fuck");
 	fprintf(stderr, "var p = packetHeader {\n");
-	fprintf(stderr, " interfaceID:%d,\n",io_hdr.interface_id);
-fprintf(stderr, " direction:%d,\n",io_hdr.dxfer_direction);
-fprintf(stderr, " cmdLen:%d,\n",io_hdr.cmd_len);
-fprintf(stderr, " maxSBLen:%d,\n",io_hdr.mx_sb_len);
-fprintf(stderr, " iovCount:%d,\n",io_hdr.iovec_count);
-fprintf(stderr, " xferLen:%d,\n",io_hdr.dxfer_len);
-fprintf(stderr, " data:%d,\n",io_hdr.dxferp);
-fprintf(stderr, " cdb:%d,\n",io_hdr.cmdp);
-fprintf(stderr, " sb:%d,\n",io_hdr.sbp);
-fprintf(stderr, " timeout:%d,\n",io_hdr.timeout);
-fprintf(stderr, " flags:%d,\n",io_hdr.flags);
-fprintf(stderr, " packID:%d,\n",io_hdr.pack_id);
-fprintf(stderr, " usrPtr:%d,\n",io_hdr.usr_ptr);
-fprintf(stderr, " status:%d,\n",io_hdr.status);
-fprintf(stderr, " maskedStatus:%d,\n",io_hdr.masked_status);
-fprintf(stderr, " msgStatus:%d,\n",io_hdr.msg_status);
-fprintf(stderr, " sbLen:%d,\n",io_hdr.sb_len_wr);
-fprintf(stderr, " hostStatus:%d,\n",io_hdr.host_status);
-fprintf(stderr, " driverStatus:%d,\n",io_hdr.driver_status);
-fprintf(stderr, " resID:%d,\n",io_hdr.resid);
-fprintf(stderr, " duration:%d,\n",io_hdr.duration);
-fprintf(stderr, " info:%d,\n",io_hdr.info);
-fprintf(stderr, "}\n");
+	fprintf(stderr, " interfaceID:'%c',\n",io_hdr.interface_id);
+	fprintf(stderr, " direction:%d,\n",io_hdr.dxfer_direction);
+	fprintf(stderr, " cmdLen:%d,\n",io_hdr.cmd_len);
+	fprintf(stderr, " maxSBLen:%d,\n",io_hdr.mx_sb_len);
+	fprintf(stderr, " iovCount:%d,\n",io_hdr.iovec_count);
+	fprintf(stderr, " xferLen:%d,\n",io_hdr.dxfer_len);
+	fprintf(stderr, " data:%d,\n",0);
+	fprintf(stderr, " cdb:%d,\n",0);
+	fprintf(stderr, " sb:%d,\n",0);
+	fprintf(stderr, " timeout:%d,\n",io_hdr.timeout);
+	fprintf(stderr, " flags:%d,\n",io_hdr.flags);
+	fprintf(stderr, " packID:%d,\n",io_hdr.pack_id);
+	fprintf(stderr, " usrPtr:%d,\n",0);
+	fprintf(stderr, " status:%d,\n",io_hdr.status);
+	fprintf(stderr, " maskedStatus:%d,\n",io_hdr.masked_status);
+	fprintf(stderr, " msgStatus:%d,\n",io_hdr.msg_status);
+	fprintf(stderr, " sbLen:%d,\n",io_hdr.sb_len_wr);
+	fprintf(stderr, " hostStatus:%d,\n",io_hdr.host_status);
+	fprintf(stderr, " driverStatus:%d,\n",io_hdr.driver_status);
+	fprintf(stderr, " resID:%d,\n",io_hdr.resid);
+	fprintf(stderr, " duration:%d,\n",io_hdr.duration);
+	fprintf(stderr, " info:%d,\n",io_hdr.info);
+	fprintf(stderr, "}\n");
+	fprintf(stderr, "var c = cdb{");
+	for(unsigned int i = 0; i < sizeof(cdb); i++) {
+	  fprintf(stderr, "%#02x, ", cdb[i]);
+	}
+	fprintf(stderr, "}\n");
+	
 	if (ioctl(fd, SG_IO, &io_hdr) == -1) {
 		if (verbose)
 			perror("ioctl(fd,SG_IO)");
