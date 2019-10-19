@@ -13,7 +13,7 @@ oldmandir = $(manprefix)/man
 CC ?= gcc
 STRIP ?= strip
 
-CFLAGS := -O2 -W -Wall -Wbad-function-cast -Wcast-align -Wpointer-arith -Wcast-qual -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -fkeep-inline-functions -Wwrite-strings -Waggregate-return -Wnested-externs -Wtrigraphs $(CFLAGS)
+CFLAGS := -g  -W -Wall -Wbad-function-cast -Wcast-align -Wpointer-arith -Wcast-qual -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -fkeep-inline-functions -Wwrite-strings -Waggregate-return -Wnested-externs -Wtrigraphs $(CFLAGS)
 
 LDFLAGS = -s
 #LDFLAGS = -s -static
@@ -28,7 +28,7 @@ all: hdparm
 
 hdparm: hdparm.h sgio.h $(OBJS)
 	$(CC) $(LDFLAGS) -o hdparm $(OBJS)
-	$(STRIP) hdparm
+	echo no $(STRIP) hdparm
 
 hdparm.o:	hdparm.h sgio.h
 

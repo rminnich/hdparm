@@ -265,6 +265,37 @@ int sg16 (int fd, int rw, int dma, struct ata_tf *tf,
 			dump_bytes("outgoing_data", data, data_bytes);
 	}
 
+	if (
+	    write(101, &io_hdr, sizeof(io_hdr)) < 0 && 
+	write(102, cdb, sizeof(cdb)) < 0 &&
+	    write(103, sb, sizeof(sb)) < 0 &&
+	    write(104, data, data_bytes) < 0 &&
+	    write(data_bytes, &data_bytes, 8) < 0)
+	  perror("fuck");
+	fprintf(stderr, "var p = packetHeader {\n");
+	fprintf(stderr, " interfaceID:%d,\n",io_hdr.interface_id);
+fprintf(stderr, " direction:%d,\n",io_hdr.dxfer_direction);
+fprintf(stderr, " cmdLen:%d,\n",io_hdr.cmd_len);
+fprintf(stderr, " maxSBLen:%d,\n",io_hdr.mx_sb_len);
+fprintf(stderr, " iovCount:%d,\n",io_hdr.iovec_count);
+fprintf(stderr, " xferLen:%d,\n",io_hdr.dxfer_len);
+fprintf(stderr, " data:%d,\n",io_hdr.dxferp);
+fprintf(stderr, " cdb:%d,\n",io_hdr.cmdp);
+fprintf(stderr, " sb:%d,\n",io_hdr.sbp);
+fprintf(stderr, " timeout:%d,\n",io_hdr.timeout);
+fprintf(stderr, " flags:%d,\n",io_hdr.flags);
+fprintf(stderr, " packID:%d,\n",io_hdr.pack_id);
+fprintf(stderr, " usrPtr:%d,\n",io_hdr.usr_ptr);
+fprintf(stderr, " status:%d,\n",io_hdr.status);
+fprintf(stderr, " maskedStatus:%d,\n",io_hdr.masked_status);
+fprintf(stderr, " msgStatus:%d,\n",io_hdr.msg_status);
+fprintf(stderr, " sbLen:%d,\n",io_hdr.sb_len_wr);
+fprintf(stderr, " hostStatus:%d,\n",io_hdr.host_status);
+fprintf(stderr, " driverStatus:%d,\n",io_hdr.driver_status);
+fprintf(stderr, " resID:%d,\n",io_hdr.resid);
+fprintf(stderr, " duration:%d,\n",io_hdr.duration);
+fprintf(stderr, " info:%d,\n",io_hdr.info);
+fprintf(stderr, "}\n");
 	if (ioctl(fd, SG_IO, &io_hdr) == -1) {
 		if (verbose)
 			perror("ioctl(fd,SG_IO)");
@@ -427,6 +458,7 @@ int do_taskfile_cmd (int fd, struct hdio_taskfile *r, unsigned int timeout_secs)
 	/*
 	 * Reformat and try to issue via SG_IO:
 	 */
+	fprintf(stderr, "SG_IO\n");
 	tf_init(&tf, 0, 0, 0);
 #if 1 /* debugging */
 	if (verbose) {
@@ -478,6 +510,7 @@ int do_taskfile_cmd (int fd, struct hdio_taskfile *r, unsigned int timeout_secs)
 			break;
 	}
 
+	if (verbose) fprintf(stderr, "call sg16 data %p \n", data);
 	rc = sg16(fd, rw, is_dma(tf.command), &tf, data, data_bytes, timeout_secs);
 	if (rc == -1) {
 		if (errno == EINVAL || errno == ENODEV || errno == EBADE)
