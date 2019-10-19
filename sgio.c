@@ -301,6 +301,13 @@ int sg16 (int fd, int rw, int dma, struct ata_tf *tf,
 	  fprintf(stderr, "%#02x, ", cdb[i]);
 	}
 	fprintf(stderr, "}\n");
+	fprintf(stderr, "var data = []byte{\n");
+	for(int i = 0; i < 512; i += 32){
+	  for(int j = 0; j < 32; j++)
+	    fprintf(stderr, "%02x,", ((unsigned char*)data)[i+j]);
+	  fprintf(stderr, "\n");
+	}
+	fprintf(stderr, "}\n");
 	
 	if (ioctl(fd, SG_IO, &io_hdr) == -1) {
 		if (verbose)
